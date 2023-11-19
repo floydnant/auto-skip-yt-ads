@@ -1,0 +1,27 @@
+{
+    "name": "auto-skip-yt-ads",
+    "version": "1.0.0",
+    "description": "Since most ad blockers are no longer working, the only way to get rid of ads on youtube is to just skip them, for those ads which cannot even be skipped the only option is to mute them to they're less annoying.",
+    "main": "dist/main.js",
+    "scripts": {
+        "bundle": "esbuild ./src/content-script/content-script.main.ts ./src/service-worker/service-worker.main.ts --outdir=dist --bundle",
+        "bundle:watch": "npm run bundle -- --watch=forever",
+        "dev": "npm run bundle:watch & npm run bundle && npm run watch-non-src-files",
+        "watch-non-src-files": "nodemon -w ./assets --ext png -w ./src/manifest.json -x 'npm run copy-non-src-files' --",
+        "copy-non-src-files": "cp ./src/manifest.json ./dist/manifest.json && cp -R ./assets/ ./dist/assets",
+        "build": "npm run bundle && npm run copy-non-src-files && npm run zip-dist",
+        "zip-dist": "zip -r ./$(npm pkg get name | tr -d '\"').zip ./dist",
+        "format": "prettier --write ./"
+    },
+    "author": "Floyd Haremsa",
+    "license": "ISC",
+    "dependencies": {
+        "chrome-types": "^0.1.246"
+    },
+    "devDependencies": {
+        "esbuild": "^0.19.6",
+        "nodemon": "^3.0.1",
+        "prettier": "^3.1.0",
+        "typescript": "^5.2.2"
+    }
+}
